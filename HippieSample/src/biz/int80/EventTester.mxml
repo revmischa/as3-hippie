@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			[Bindable] protected var client:HippieClient;
+			
+			protected function setup():void {
+				
+			}
+			
+			protected function connect():void {
+				disconnect();
+				client = new HippieClient(serverAddr.text, Number(serverPort.text));
+				//client.connect();
+				
+			}
+			
+			protected function disconnect():void {
+				if (client) {
+					client.disconnect();
+					client = null;
+				}
+			}
+			
+			protected function subscribe():void {
+				client.topic(channel.text).subscribe(gotEvent);
+			}
+			
+			protected function gotEvent(evt:HippieEvent):void {
+				log("Got event: " + evt.channel);
+			}
+			
+			protected function sendEvent():void {
+				client.topic(channel.text).publish({ time: (new Date().millisecondsUTC) });
+			}
+			
+			protected function log(s:String):void {
+				status.text = status.text + "\n" + s;
+			}
+		]]>
+	</fx:Script>
+	<s:Form x="10" y="10">
+		<s:FormItem label="Server:">
+			<s:TextInput text="eastberkeley.int80" id="serverAddr" />
+		</s:FormItem>
+		<s:FormItem label="Port:">
+			<s:TextInput text="4002" id="serverPort" />
+		</s:FormItem>
+	</s:Form>
+	<s:Button x="188" y="129" label="Connect" click="connect()" />
+	<s:Button x="100" y="129" label="Disconnect" click="disconnect()" />
+	<s:TextArea id="status" left="10" right="10" top="158" bottom="10" editable="false"/>
+	<s:Button x="454" y="129" label="Subscribe" click="subscribe()" enabled="{client ? true : false}"/>
+	<s:Button x="363" y="129" label="Send Event" click="sendEvent()" enabled="{client ? true : false}"/>
+	<s:Form x="266" y="10">
+		<s:FormItem label="Channel:">
+			<s:TextInput id="channel" text="ping"/>
+		</s:FormItem>
+	</s:Form>
+</s:Application>
