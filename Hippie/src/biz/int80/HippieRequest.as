@@ -10,6 +10,7 @@ package biz.int80
 	import flash.net.URLRequest;
 	import flash.net.URLStream;
 	import flash.net.URLVariables;
+	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
 
 	[Bindable] public class HippieRequest extends URLStream
@@ -36,6 +37,10 @@ package biz.int80
 			this.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 		}
 		
+		protected function reset():void {
+			this.boundary = null;
+		}
+		
 		public function setArgs(evt:HippieEvent):void {
 			if (! url.data) url.data = new URLVariables();
 			
@@ -44,6 +49,7 @@ package biz.int80
 		}
 		
 		public function connect(cb:Function=null):void {
+			this.reset();
 			this.callback = cb;
 			
 			var self:HippieRequest = this;
@@ -67,14 +73,25 @@ package biz.int80
 			super.load(this.url);
 		}
 		
+		private var reconnectTimer:int;
 		public function reconnect(cb:Function=null):void {
+			if (this.connected)
+    			this.close();
+			
 			// reconnect with exponential backoff
 			var delay:int = 1000 * connectRetries*connectRetries;
-			setTimeout(function ():void {
-				trace("reconnecting in " + delay + "s...");
-				connectRetries++;
-				this.connect(cb);
+			var self:HippieRequest = this;
+			
+			if (reconnectTimer) clearTimeout(reconnectTimer);
+			reconnectTimer = setTimeout(function ():void {
+				if (self.connected) return;
+				
+				trace("reconnecting...");
+				
+				self.connectRetries++;
+				self.connect(cb);
 			}, delay);
+			trace("reconnecting in " + delay + "s...");
 		}
 		
 		protected function gotStatus(evt:HTTPStatusEvent):void {
@@ -116,7 +133,7 @@ package biz.int80
 			if (! boundary && buf.indexOf("\n") != -1) {
 				// boundary should be first line
 				var m:Array = buf.match(/^--(\w+)\r?\n/);
-				if (! m.length) {
+				if (!m || ! m.length) {
 					// we expected the boundary to be the first line. it's not, so we got an invalid response
 					trace("Failed to parse hippie reponse: " + buf);
 					return;
