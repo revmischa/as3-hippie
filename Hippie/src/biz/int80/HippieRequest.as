@@ -91,7 +91,7 @@ package biz.int80
 				self.connectRetries++;
 				self.connect(cb);
 			}, delay);
-			trace("reconnecting in " + delay + "s...");
+			trace("reconnecting in " + (delay/1000) + "s...");
 		}
 		
 		protected function gotStatus(evt:HTTPStatusEvent):void {
