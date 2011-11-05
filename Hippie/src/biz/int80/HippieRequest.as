@@ -45,7 +45,7 @@ package biz.int80
 			if (! url.data) url.data = new URLVariables();
 			
 			// copy args
-			url.data.message = JSON.encode(evt.args);
+			url.data.message = JSON.encode(evt.message);
 		}
 		
 		public function connect(cb:Function=null):void {
@@ -131,7 +131,7 @@ package biz.int80
 			// do we have a boudary yet? if not, we probably don't have access to headers and need to assume a boundary
 			if (! boundary && buf.indexOf("\n") != -1) {
 				// boundary should be first line
-				var m:Array = buf.match(/^--(\w+)\r?\n/);
+				var m:Array = buf.match(/^--(\w+)\r?\n/ms);
 				if (!m || ! m.length) {
 					// we expected the boundary to be the first line. it's not, so we got an invalid response
 					trace("Failed to parse hippie reponse: " + buf);

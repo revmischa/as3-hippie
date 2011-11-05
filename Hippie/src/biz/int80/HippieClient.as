@@ -38,9 +38,9 @@ package biz.int80
 			var self:HippieClient = this;
 			req.addEventListener(HippieEvent.HIPPIE_EVENT, function (evt:HippieEvent):void {
 				// got a hippie message
-				if (evt.args.type && evt.args.type == "hippie.pipe.set_client_id") {
+				if (evt.channel && evt.channel == "hippie.pipe.set_client_id") {
 					// got a client id
-					clientId = evt.args.client_id;
+					clientId = evt.client_id;
 				}
 				
 				self.dispatchEvent(evt);
@@ -49,15 +49,12 @@ package biz.int80
 			return req;
 		}
 		
-		/*public function connect():void {
-			var req:HippieRequest = this.newRequest("");
-			req.connect();
-		}*/
-		
 		public function disconnect():void {
 			for each (var req:HippieRequest in this.requests) {
 				if (req.connected)
 					req.close();
+			
+				req = null;
 			}
 			
 			this.requests.removeAll();
