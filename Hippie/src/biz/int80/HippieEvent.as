@@ -2,7 +2,7 @@ package biz.int80
 {
 	import flash.events.Event;
 	
-	public class HippieEvent extends Event
+	[Bindable] public class HippieEvent extends Event implements IHippieEvent
 	{
 		public static const HIPPIE_EVENT:String = "hippieEvent";
 		

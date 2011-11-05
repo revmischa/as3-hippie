@@ -15,10 +15,11 @@
 				
 			}
 			
-			protected function connect():void {
+			protected function create():void {
 				disconnect();
 				client = new HippieClient(serverAddr.text, Number(serverPort.text));
-				//client.connect();
+				client.https = https.selected;
+				log("Client created");
 				
 			}
 			
@@ -48,13 +49,16 @@
 	</fx:Script>
 	<s:Form x="10" y="10">
 		<s:FormItem label="Server:">
-			<s:TextInput text="eastberkeley.int80" id="serverAddr" />
+			<s:TextInput text="ev.foo.com" id="serverAddr" />
 		</s:FormItem>
 		<s:FormItem label="Port:">
-			<s:TextInput text="4002" id="serverPort" />
+			<s:TextInput text="6000" id="serverPort" />
+		</s:FormItem>
+		<s:FormItem label="HTTPS:">
+			<s:CheckBox id="https" selected="true" />
 		</s:FormItem>
 	</s:Form>
-	<s:Button x="188" y="129" label="Connect" click="connect()" />
+	<s:Button x="188" y="129" label="Create" click="create()" />
 	<s:Button x="100" y="129" label="Disconnect" click="disconnect()" />
 	<s:TextArea id="status" left="10" right="10" top="158" bottom="10" editable="false"/>
 	<s:Button x="454" y="129" label="Subscribe" click="subscribe()" enabled="{client ? true : false}"/>

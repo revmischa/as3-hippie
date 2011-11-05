@@ -5,6 +5,7 @@
     <classEntry path="biz.int80.HippieTopic"/>
     <classEntry path="biz.int80.HippieEvent"/>
     <classEntry path="biz.int80.HippieRequest"/>
+    <classEntry path="biz.int80.IHippieEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

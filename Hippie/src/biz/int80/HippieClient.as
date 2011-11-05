@@ -9,6 +9,7 @@ package biz.int80
 	public class HippieClient extends EventDispatcher {		
 		public var host:String;
 		public var port:int;
+		public var https:Boolean = false;
 		public var path:String;
 		public var clientId:String;
 		protected var topics:Object = {};
@@ -23,7 +24,7 @@ package biz.int80
 		}
 		
 		protected function urlBase():String {
-			return "http://" + host + ":" + port + path;
+			return (https ? "https://" : "http://") + host + ":" + port + path;
 		}
 		
 		public function newRequest(urlPath:String):HippieRequest {

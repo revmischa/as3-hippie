@@ -56,7 +56,7 @@ package biz.int80
 			
 			var finishedCallback:Function = function (evt:Event):void {
 				trace("request complete");
-				connectRetries = 0;
+				//connectRetries = 0;
 
 				if (cb != null) cb();
 				self.removeEventListener(Event.COMPLETE, finishedCallback);
@@ -123,7 +123,6 @@ package biz.int80
 		}
 		
 		protected function gotData(evt:ProgressEvent):void {
-			connectRetries = 0;
 			
 			var str:String = readUTFBytes(bytesAvailable);
 			//trace("data: " + str);
@@ -153,6 +152,9 @@ package biz.int80
 		// split buffer on boundary, process parts
 		protected function parseParts():void {
 			if (! boundary) return;
+			
+			// at this point we can assume we're good, connection-wise
+			connectRetries = 0;
 			
 			var parts:Array = buf.split(boundary);
 			
