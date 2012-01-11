@@ -80,6 +80,11 @@ package biz.int80
 			
 			// reconnect with exponential backoff
 			var delay:int = 1000 * connectRetries*connectRetries;
+			// max delay 10 mins
+			var maxRetryDelay:uint = 1000 * 60 * 60 * 10;
+			if (delay > maxRetryDelay)
+				delay = maxRetryDelay;
+			
 			var self:HippieRequest = this;
 			
 			if (reconnectTimer) clearTimeout(reconnectTimer);
