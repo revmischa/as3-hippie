@@ -45,7 +45,7 @@ package biz.int80
 			if (! url.data) url.data = new URLVariables();
 			
 			// copy args
-			url.data.message = JSON.encode(evt.message);
+			url.data.message = com.adobe.serialization.json.JSON.encode(evt.message);
 		}
 		
 		public function connect(cb:Function=null):void {
@@ -210,7 +210,7 @@ package biz.int80
 		
 		// got event JSON
 		protected function parseMessage(json:String):void {
-			var msg:Object = JSON.decode(json);
+			var msg:Object = com.adobe.serialization.json.JSON.decode(json);
 			if (! msg) return;
 			
 			this.processMessage(msg);
