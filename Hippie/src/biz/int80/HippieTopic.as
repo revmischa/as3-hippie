@@ -4,31 +4,47 @@ package biz.int80
 
 	public class HippieTopic extends EventDispatcher
 	{
-		protected var channel:String;
+		protected var type:String;
 		protected var client:HippieClient;
 		
 		public function HippieTopic(hippieClient:HippieClient, topicName:String)
 		{
-			this.channel = topicName;
+			this.type = topicName;
 			this.client = hippieClient;
 		}
 		
 		// be notified of events
-		public function subscribe(cb:Function):void {
-			if (! this.channel) {
+		public function subscribe(eventCallback:Function):void {
+			if (! this.type) {
 				trace("trying to subscribe to topic with no name");
 				return;
 			}
 			
-			var req:HippieRequest = this.client.newRequest("/mxhr/" + this.channel);
+			var req:HippieRequest = connect();
+			req.addEventListener(HippieEvent.HIPPIE_EVENT, eventCallback);
+		}
+		
+		// connect, don't subscribe
+		// calls connectedCallback when successfully connected
+		public function connect(connectedCallback:Function=null):HippieRequest {
+			if (! this.type) {
+				trace("trying to connect to topic with no name");
+				return undefined;
+			}
+			
+			var req:HippieRequest = this.client.newRequest("/mxhr/" + this.type);
 			req.autoReconnect = true;
-			req.addEventListener(HippieEvent.HIPPIE_EVENT, cb);
-			req.connect();
+			req.connect(connectedCallback);
+			
+			return req;
 		}
 		
 		public function publish(msg:Object=null):void {
 			if (! msg) msg = {};
-			if (! msg.name) msg.type = this.channel;
+			
+			// default event type to our topic name
+			if (! msg.hasOwnProperty("type") || ! msg.type) msg.type = this.type;
+			
 			this.client.publish(msg);
 		}
 	}

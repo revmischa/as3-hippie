@@ -9,10 +9,20 @@ package biz.int80
 		// actually holds event params
 		private var _message:Object;
 		
+		public static function newEvent(type:String, params:Object=null, bubbles:Boolean=false):HippieEvent {
+			var message:Object = {
+				"type": type,
+				params: params
+			};
+			
+			return new HippieEvent(message, bubbles);
+		}
+		
 		public function HippieEvent(fromMessage:Object, bubbles:Boolean=false) {
 			_message = fromMessage;
 			if (! _message.params)
 				_message.params = {};
+			
 			super(HIPPIE_EVENT, bubbles);
 		}
 		
