@@ -103,6 +103,7 @@ package biz.int80
 			if (evt.status == 200) {
 				// this request is finished
 				// ...
+				trace("got HTTP status: " + evt.status);
 			}
 			
 			// get boundary from content-type header, if available

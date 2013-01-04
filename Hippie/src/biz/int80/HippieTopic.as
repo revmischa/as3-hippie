@@ -13,6 +13,10 @@ package biz.int80
 			this.client = hippieClient;
 		}
 		
+		public function get topicName():String {
+			return type;
+		}
+		
 		// be notified of events
 		public function subscribe(eventCallback:Function):void {
 			if (! this.type) {
